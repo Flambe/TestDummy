@@ -286,8 +286,25 @@ class Builder
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
 
+        $entity = $this->assignRelationshipsRecursively($entity, $modelAttributes, $attributes);
+
+        return $entity;
+    }
+
+    /**
+     * Check each field and apply a relationship if it has been defined.
+     *
+     * @param mixed $entity
+     * @param array $modelAttributes
+     * @param array $attributes
+     * @return mixed
+     */
+    private function assignRelationshipsRecursively($entity, $modelAttributes, $attributes)
+    {
         foreach ($modelAttributes as $columnName => $value) {
-            if ($relationship = $this->findRelation($value)) {
+            if (is_array($value)){
+                $entity[$columnName] = $this->assignRelationshipsRecursively($entity[$columnName], $modelAttributes[$columnName], $attributes);
+            } elseif ($relationship = $this->findRelation($value)) {
                 $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
             }
         }
