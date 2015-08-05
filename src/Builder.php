@@ -228,7 +228,7 @@ class Builder
      * Apply Faker dummy values.
      *
      * @param  mixed $attribute
-     * @return array|string
+     * @return mixed
      */
     protected function runFaker($attribute)
     {
@@ -236,18 +236,11 @@ class Builder
             $attribute = $attribute();
         }
 
-        // It's possible that the called Faker method returned an array.
-        // If that is the case, we'll implode it for the user.
+        // It's possible that the attribute is an array.
+        // If that is the case, we'll check for faker inside it.
 
         if (is_array($attribute)) {
-
-            // If we're dealing with an associative array or array of arrays
-
-            if (array_values($attribute) !== $attribute || (isset($attribute[0]) && is_array($attribute[0]))) {
-                return array_map([$this, 'runFaker'], $attribute);
-            }
-
-            return implode(' ', $attribute);
+            return array_map([$this, 'runFaker'], $attribute);
         }
 
         return $attribute;
