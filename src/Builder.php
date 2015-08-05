@@ -241,9 +241,9 @@ class Builder
 
         if (is_array($attribute)) {
 
-            // If we're dealing with an associative array...
+            // If we're dealing with an associative array or array of arrays
 
-            if (array_values($attribute) !== $attribute) {
+            if (array_values($attribute) !== $attribute || (isset($attribute[0]) && is_array($attribute[0]))) {
                 return array_map([$this, 'runFaker'], $attribute);
             }
 
